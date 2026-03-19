@@ -1,6 +1,8 @@
 open OUnit2
 open Mastermind
 
+module IntSet = Set.Make(Int)
+
 let tests = "mastermind" >::: [
     "same color on same position count as matches" >::
         (fun _ -> assert_equal 2 (matches 1234 1664));
@@ -32,6 +34,8 @@ let tests = "mastermind" >::: [
     "number_to_codeword converts 1295 to a 6666" >::
         (fun _ -> assert_equal 6666 (number_to_codeword 1295));
 
+    "a set of all codewords from 1111 to 6666" >::
+        (fun _ -> assert_equal 1296 (List.length (Mastermind.IntSet.to_list all_codewords)));
 ]
 
 let () =

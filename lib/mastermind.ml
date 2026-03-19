@@ -42,3 +42,15 @@ let number_to_codeword n =
         then 0
         else (n mod 6) + 1 + 10 * number_to_codeword_acc (i - 1) (n / 6)
     in number_to_codeword_acc 4 n
+
+
+module IntSet = Set.Make(Int)
+
+let all_codewords =
+    let rec all_codewords_acc n =
+        if n = 1296
+        then []
+        else number_to_codeword n :: all_codewords_acc (n + 1)
+    in IntSet.of_list (all_codewords_acc 0)
+
+
