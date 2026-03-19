@@ -25,7 +25,8 @@ let hits guess secret =
     let rec hits_acc n colors_guess colors_secret = 
         if n = 0
         then 0
-        else min (colors_guess mod 10) (colors_secret mod 10) + hits_acc (n - 1) (colors_guess / 10) (colors_secret / 10)
+        else min (colors_guess mod 10) (colors_secret mod 10)
+        + hits_acc (n - 1) (colors_guess / 10) (colors_secret / 10)
     in
     hits_acc 4 (colors guess) (colors secret)
 
@@ -34,3 +35,10 @@ let validate guess secret =
     in
     let h = hits guess secret
     in (m * 10) + (h - m)
+
+let number_to_codeword n = 
+    let rec number_to_codeword_acc i n =
+        if i = 0
+        then 0
+        else (n mod 6) + 1 + 10 * number_to_codeword_acc (i - 1) (n / 6)
+    in number_to_codeword_acc 4 n
