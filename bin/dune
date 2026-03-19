@@ -1,0 +1,4 @@
+(executable
+ (public_name mastermind-ocaml)
+ (name main)
+ (libraries mastermind_ocaml))
