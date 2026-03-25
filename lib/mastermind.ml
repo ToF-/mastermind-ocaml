@@ -43,7 +43,6 @@ let number_to_codeword n =
         else (n mod 6) + 1 + 10 * number_to_codeword_acc (i - 1) (n / 6)
     in number_to_codeword_acc 4 n
 
-
 module IntSet = Set.Make(Int)
 
 let all_codewords =
@@ -56,6 +55,24 @@ let all_codewords =
 let narrow codeword result codewords =
     IntSet.filter (fun cw -> (validate codeword cw) == result) codewords
 
+module IntMap = Map.Make(Int)
 
+let increment score_opt = 
+    Option.map (fun x -> x + 1) score_opt
 
+let accumulate_score codeword candidate scores =
+    let key = validate codeword candidate
+    in IntMap.update key increment scores
+
+let print_intmap m =
+  IntMap.iter (fun k v -> Printf.printf "%d -> %d\n" k v) m
+
+let print_intset s =
+    IntSet.iter (fun k -> Printf.printf "%d\n" k) s
+
+let max_result_scores codeword codewords =
+    let scores = IntSet.fold (fun cw -> accumulate_score cw codeword) codewords IntMap.empty
+    in 
+    print_intmap scores;
+    IntMap.fold (fun _ score result -> max score result) scores 0
 

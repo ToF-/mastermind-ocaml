@@ -42,6 +42,9 @@ let tests = "mastermind" >::: [
 
     "narrowed set does not contain the codeword that was used to narrow it" >::
         (fun _ -> assert_equal false (Mastermind.IntSet.mem 1122 (narrow 1122 10 all_codewords)));
+
+    "max of result scores for a given codeword against all candidate codewords" >::
+        (fun _ -> assert_equal 0 (max_result_scores 1122 all_codewords))
 ]
 
 let () =
