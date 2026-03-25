@@ -57,8 +57,9 @@ let narrow codeword result codewords =
 
 module IntMap = Map.Make(Int)
 
-let increment score_opt = 
-    Option.map (fun x -> x + 1) score_opt
+let increment score_opt = match score_opt with
+    None -> Some 1
+    | Some n -> Some (n + 1)
 
 let accumulate_score codeword candidate scores =
     let key = validate codeword candidate
@@ -72,7 +73,5 @@ let print_intset s =
 
 let max_result_scores codeword codewords =
     let scores = IntSet.fold (fun cw -> accumulate_score cw codeword) codewords IntMap.empty
-    in 
-    print_intmap scores;
-    IntMap.fold (fun _ score result -> max score result) scores 0
+    in IntMap.fold (fun _ score result -> max score result) scores 0
 
