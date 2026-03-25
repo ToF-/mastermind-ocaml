@@ -35,7 +35,13 @@ let tests = "mastermind" >::: [
         (fun _ -> assert_equal 6666 (number_to_codeword 1295));
 
     "a set of all codewords from 1111 to 6666" >::
-        (fun _ -> assert_equal 1296 (List.length (Mastermind.IntSet.to_list all_codewords)));
+        (fun _ -> assert_equal 1296 (Mastermind.IntSet.cardinal all_codewords));
+
+    "narrowing a set from all codewords that match a given codeword for a given result" >::
+        (fun _ -> assert_equal 256 (Mastermind.IntSet.cardinal (narrow 1122 10 all_codewords)));
+
+    "narrowed set does not contain the codeword that was used to narrow it" >::
+        (fun _ -> assert_equal false (Mastermind.IntSet.mem 1122 (narrow 1122 10 all_codewords)));
 ]
 
 let () =

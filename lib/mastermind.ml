@@ -53,4 +53,9 @@ let all_codewords =
         else number_to_codeword n :: all_codewords_acc (n + 1)
     in IntSet.of_list (all_codewords_acc 0)
 
+let narrow codeword result codewords =
+    IntSet.filter (fun cw -> (validate codeword cw) == result) codewords
+
+
+
 
