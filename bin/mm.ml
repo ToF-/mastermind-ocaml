@@ -9,7 +9,6 @@ let main () =
     with Failure _ ->
       print_endline "Error: argument must be an integer";
       exit 1
-    in
-  let result = Mastermind.guess_move 1 arg 1122 Mastermind.all_codewords in Mastermind.print_moves result
+  let result = guess_move 1 arg 1122 all_codewords in print_moves result
 
 let () = main ()

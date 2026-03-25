@@ -28,7 +28,7 @@ let hits guess secret =
         else min (colors_guess mod 10) (colors_secret mod 10)
         + hits_acc (n - 1) (colors_guess / 10) (colors_secret / 10)
     in
-    hits_acc 4 (colors guess) (colors secret)
+    hits_acc 6 (colors guess) (colors secret)
 
 let validate guess secret = 
     let m = matches guess secret 
@@ -57,21 +57,35 @@ let narrow codeword result codewords =
 
 module IntMap = Map.Make(Int)
 
-let increment score_opt = match score_opt with
-    None -> Some 1
-    | Some n -> Some (n + 1)
-
-let accumulate_score codeword candidate scores =
-    let key = validate codeword candidate
-    in IntMap.update key increment scores
-
-let print_intmap m =
-  IntMap.iter (fun k v -> Printf.printf "%d -> %d\n" k v) m
-
-let print_intset s =
-    IntSet.iter (fun k -> Printf.printf "%d\n" k) s
-
 let max_result_scores codeword codewords =
-    let scores = IntSet.fold (fun cw -> accumulate_score cw codeword) codewords IntMap.empty
+    let scores = IntSet.fold
+        (fun cw acc ->
+            let key = validate codeword cw
+            in IntMap.update key (fun score_opt ->
+                match score_opt with None -> Some 1 | Some n -> Some (n + 1))
+            acc)
+        codewords IntMap.empty
     in IntMap.fold (fun _ score result -> max score result) scores 0
 
+let min_max_result_scores codewords =
+    let (result,_) = IntSet.fold (fun cw acc ->
+        let in_solution = if IntSet.mem cw codewords then 0 else 1 in
+        let score = max_result_scores cw codewords * 2 + in_solution in
+        let (min_codeword, min_score) = acc in
+        if score < min_score then (cw,score) else acc)
+    codewords (0, 9999999) in
+    result
+
+let rec guess_move count secret codeword solution =
+    if count > 5 
+        then []
+        else match validate codeword secret with
+    40 -> [(codeword, 40)]
+    | result ->
+            let narrowed_solution = narrow codeword result solution in
+            let next_guess = min_max_result_scores narrowed_solution in
+            (codeword, result) ::  guess_move (count + 1) secret next_guess narrowed_solution
+
+
+let print_moves moves =
+    List.iteri (fun i (move,result) -> Printf.printf "%d %d %02d\n" (i+1) move result) moves

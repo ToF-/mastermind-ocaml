@@ -23,7 +23,9 @@ let tests = "mastermind" >::: [
         (fun _ -> assert_equal 12 (validate 1234 5324));
 
     "40 means all matching positions and colors" >::
-        (fun _ -> assert_equal 40 (validate 1234 1234));
+        (fun _ -> assert_equal 40 (validate 1643 1643));
+
+
 
     "04 means all colors in incorrect positions" >::
         (fun _ -> assert_equal 04 (validate 1234 4123));
@@ -45,6 +47,13 @@ let tests = "mastermind" >::: [
 
     "max of result scores for a given codeword against all candidate codewords" >::
         (fun _ -> assert_equal 256 (max_result_scores 1122 all_codewords));
+
+    "min max of result scores for all codewords against all candidate codewords" >::
+        (fun _ -> assert_equal 1122 (min_max_result_scores all_codewords));
+
+    "guess all the moves to find the secret codeword" >::
+        (fun _ -> let result = guess_move 1 1643 1122 all_codewords in
+        assert_equal [(1122,10); (1344,21); (1445,20); (1643,40)] result);
 ]
 
 let () =
