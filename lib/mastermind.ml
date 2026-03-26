@@ -31,10 +31,8 @@ let hits guess secret =
     hits_acc 6 (colors guess) (colors secret)
 
 let validate guess secret = 
-    let m = matches guess secret 
-    in
-    let h = hits guess secret
-    in (m * 10) + (h - m)
+    let m = matches guess secret in
+    let h = hits guess secret in (m * 10) + (h - m)
 
 let number_to_codeword n = 
     let rec number_to_codeword_acc i n =
