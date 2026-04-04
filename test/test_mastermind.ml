@@ -1,9 +1,10 @@
 open OUnit2
+open QCheck
 open Mastermind
 
 module IntSet = Set.Make(Int)
 
-let tests = "mastermind" >::: [
+let unit_tests = "mastermind" >::: [
     "same color on same position count as matches" >::
         (fun _ -> assert_equal 2 (matches 1234 1664));
 
@@ -56,5 +57,25 @@ let tests = "mastermind" >::: [
         assert_equal [(1122,10); (1344,21); (1445,20); (1643,40)] result);
 ]
 
-let () =
-  run_test_tt_main tests
+let codeword_gen =
+    let open Gen in
+
+    let* p1 = int_range 1 6 in
+    let* p2 = int_range 1 6 in
+    let* p3 = int_range 1 6 in
+    let* p4 = int_range 1 6 in
+    return (p1 * 1000 + p2 * 100 + p3 * 10 + p4)
+
+    let gen = make codeword_gen
+
+let guess_move_takes_five_or_less_moves =
+        Test.make ~name: "guess takes 5 moves or less"
+        gen (fun cw -> let result = Mastermind.guess_move 1 cw 1122 all_codewords in
+        List.length result <= 5)
+
+let _ =
+  List.map run_test_tt_main [
+      unit_tests ;
+      ("tests" >::: List.map QCheck_ounit.to_ounit2_test [guess_move_takes_five_or_less_moves]);
+  ]
+
